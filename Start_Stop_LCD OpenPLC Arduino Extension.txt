@@ -1,0 +1,47 @@
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+
+
+int POT_Data;                               //hold the POT data to be displayed on the LCD
+
+const long duration = 1000;                 //determines the updating of the POT data on the LCD
+
+long rememberTime = 0;                      //keeps track of the POT data update time
+
+
+LiquidCrystal_I2C lcd(0x27,16,2);           // set the LCD address to 0x27 for a 16 chars and 2 line display
+
+void sketch_setup()
+{
+  lcd.init();                               // initialize the lcd 
+  lcd.init();
+
+  lcd.backlight();                          //turn LCD backlight
+  lcd.setCursor(0,0);                       //display "INDICATOR:" at column 0, row 0 of the LCD
+  lcd.print("INDICATOR: ");  
+  lcd.setCursor(0,1);                       //display "POT:" at column 0, row 1 of the LCD
+  lcd.print("POT: ");
+
+  POT_Data = POT_L;                         //retrieve initial POT data
+}
+
+void sketch_loop()
+{
+if (INDICATOR_L){                   
+  lcd.setCursor(11,0);                      //print ON on the LCD if INDICATOR is 1
+  lcd.print("ON ");   
+}else{
+  lcd.setCursor(11,0);                      //print OFF on the LCD if INDICATOR is 0
+  lcd.print("OFF");   
+}
+
+  lcd.setCursor(5,1);                       //print print the POT data on the LCD
+  lcd.print(POT_Data);
+
+if (millis() - rememberTime >= duration) { //refresh the POT data value on the LCD
+   rememberTime = millis();
+   POT_Data = POT_L;
+   lcd.setCursor(5,1);
+   lcd.print("          ");
+}
+}
